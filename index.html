@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🥗 YoFood</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="index.js" defer></script>
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <div id="currentDate" style="font-size: 1.1em; margin-bottom: 20px; color: #555;"></div>
+    <h1>🥗 YoFood</h1>
+    <div id="uploadContainer">
+        <p>Отправьте ссылку на таблицу:</p>
+        <input type="text" id="sheetLinkInput" autocomplete="off" placeholder="Вставьте ссылку на Google Таблицу">
+        <button id="uploadBtn">Загрузить</button>
+    </div>
+    <div id="selectContainer">
+        <div class="selectWrapper">
+            <label for="daySelect">День недели:</label>
+            <select id="daySelect">
+                <option value="Пн">Пн</option>
+                <option value="Вт">Вт</option>
+                <option value="Ср">Ср</option>
+                <option value="Чт">Чт</option>
+                <option value="Пт">Пт</option>
+            </select>
+            <label for="employeeSelect">Сотрудник:</label>
+            <select id="employeeSelect">
+                <option value="">Выберите сотрудника</option>
+            </select>
+        </div>
+    </div>
+    <div class="loader" id="loader"></div>
+    <div id="jsonDisplay"></div>
+    <a id="compareButton" target="_blank">Сверить с таблицей</a>
+    <div class="error" id="errorDisplay"></div>
+</body>
+
+</html>
