@@ -363,5 +363,5 @@ window.addEventListener("DOMContentLoaded", () => {
     displaySheetTitle(storedTitle);
   }
 
-  setInterval(createSnowflake, 500);
+  setInterval(createSnowflake, 1000);
 });
