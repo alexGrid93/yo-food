@@ -2,20 +2,50 @@ body {
     font-family: Arial, sans-serif;
     margin: 20px;
     padding: 10px;
+    background-color: aliceblue;
+    color: #231F20;
 }
 
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.maskotImg {
+    width: 70px;
+    height: min-content;
+}
+
+h1 {
+  font-family: "Kablammo", serif;
+  font-size: 40px;
+  background-image: linear-gradient(90deg, red, green);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorShift 1s infinite alternate;
+}
+
+@keyframes colorShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+
 #downloadBtn {
-    padding: 10px 20px;
+    padding: 10px;
     font-size: 16px;
     cursor: pointer;
     background-color: #3498db;
     color: white;
     border: none;
     border-radius: 5px;
-}
-
-#downloadBtn:hover {
-    background-color: #2980b9;
 }
 
 #uploadContainer {
@@ -37,6 +67,11 @@ body {
     color: white;
     border: none;
     border-radius: 5px;
+    font-size: 14px;
+}
+
+#sheetTitle {
+  margin-bottom: 20px;
 }
 
 #selectContainer {
@@ -50,14 +85,8 @@ body {
     gap: 15px
 }
 
-label {
-    margin-right: 10px;
-    font-weight: bold;
-}
-
 select {
     padding: 8px;
-    margin-right: 20px;
     margin-bottom: 3px;
     height: 50px;
     border: 1px solid #ccc;
@@ -111,20 +140,38 @@ select {
 .values-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    padding-left: 20px;
+    gap: 20px;
+    padding-left: 0px;
+}
+
+.values-list > li {
+  list-style: none;
+  position: relative;
+  padding-left: 30px;
+}
+
+li::before {
+  content: '';
+  background-image: url('./decoration.svg');
+  background-size: 20px 20px; /* Устанавливает размер иконки */
+  background-repeat: no-repeat;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  left: 0;
+  top: -1px;
 }
 
 #compareButton {
     margin-top: 10px;
     display: none;
-    background-color: #3498db;
+    background-color: #008736;
     color: #fff;
     border: none;
     border-radius: 5px;
     padding: 10px;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 14px;
     text-align: center;
 }
 

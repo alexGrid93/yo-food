@@ -1,6 +1,39 @@
 let SHEET_ID = null;
 const SHEETS = ["Пн", "Вт", "Ср", "Чт", "Пт"];
 
+function createSnowflake() {
+  const snowflake = document.createElement("div");
+  snowflake.innerText = "❄";
+  snowflake.style.position = "fixed";
+  snowflake.style.top = "-50px";
+  snowflake.style.left = `${Math.random() * 95}vw`;
+  snowflake.style.fontSize = `${Math.random() * 20 + 10}px`;
+  snowflake.style.color = "#64C7FF";
+  snowflake.style.pointerEvents = "none";
+  snowflake.style.zIndex = "9999";
+
+  document.body.appendChild(snowflake);
+
+  // Анимация падения снежинки
+  const duration = Math.random() * 10 + 5; // 3-8 секунд падения
+  const animation = snowflake.animate(
+    [
+      { transform: `translateY(0px) rotate(0deg)`, opacity: 1 },
+      {
+        transform: `translateY(${window.innerHeight + 100}px) rotate(360deg)`,
+        opacity: 0,
+      },
+    ],
+    {
+      duration: duration * 1000,
+      easing: "linear",
+    }
+  );
+
+  // Удаляем снежинку после завершения анимации
+  animation.onfinish = () => snowflake.remove();
+}
+
 function toggleLoader(show) {
   const loader = document.getElementById("loader");
   loader.style.display = show ? "block" : "none";
@@ -55,6 +88,11 @@ function displayData(data) {
     }
     display.appendChild(employeeCard);
   }
+}
+
+function displaySheetTitle(title) {
+  let sheetTitleElement = document.getElementById("sheetTitle");
+  sheetTitleElement.textContent = title;
 }
 
 async function downloadAndStoreGoogleSheets(
@@ -121,6 +159,22 @@ async function downloadAndStoreGoogleSheets(
       throw new Error("Не удалось создать объект из данных.");
     }
     localStorage.setItem("googleSheetDataMap", JSON.stringify(masterData));
+    console.log(workbook);
+    let sheetTitle = "Название таблицы";
+    if (workbook.SheetNames.includes("Пн")) {
+      const worksheet = workbook.Sheets["Пн"];
+      const cellAddress = "B1";
+      const cell = worksheet[cellAddress];
+      if (cell && cell.v) {
+        const date = XLSX.SSF.parse_date_code(cell.v);
+        sheetTitle = `Таблица от: ${String(date.d).padStart(2, "0")}.${String(
+          date.m
+        ).padStart(2, "0")}.${date.y}`;
+      }
+    }
+
+    localStorage.setItem("sheetTitle", sheetTitle);
+    displaySheetTitle(sheetTitle);
     populateEmployeeSelect(masterData);
     setDefaultDaySelect();
     displaySelectedData();
@@ -219,7 +273,7 @@ function displaySelectedData() {
       const dayCard = document.createElement("div");
       dayCard.className = "day-card";
       if (valuesArray.length > 0) {
-        const valuesList = document.createElement("ol");
+        const valuesList = document.createElement("ul");
         valuesList.className = "values-list";
         valuesArray.forEach((value) => {
           const listItem = document.createElement("li");
@@ -303,4 +357,11 @@ window.addEventListener("DOMContentLoaded", () => {
   currentDateElement.textContent = `${
     formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
   }`;
+
+  const storedTitle = localStorage.getItem("sheetTitle");
+  if (storedTitle) {
+    displaySheetTitle(storedTitle);
+  }
+
+  setInterval(createSnowflake, 500);
 });
