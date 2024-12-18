@@ -1,5 +1,6 @@
 let SHEET_ID = null;
 const SHEETS = ["Пн", "Вт", "Ср", "Чт", "Пт"];
+let snowingInterval = null;
 
 function createSnowflake() {
   const snowflake = document.createElement("div");
@@ -32,6 +33,11 @@ function createSnowflake() {
 
   // Удаляем снежинку после завершения анимации
   animation.onfinish = () => snowflake.remove();
+}
+
+function toggleSnowflakes() {
+  const currentValue = JSON.parse(localStorage.getItem("snowflakes"));
+  localStorage.setItem("snowflakes", !currentValue);
 }
 
 function toggleLoader(show) {
@@ -342,9 +348,31 @@ function initializeSelects() {
   setupSelectEventListeners();
 }
 
+function initializeToggleSnowflakes() {
+  const toggleButton = document.getElementById("toggleSnowflakes");
+  if (!JSON.parse(localStorage.getItem("snowflakes"))) {
+    toggleButton.innerHTML = "❄️";
+  } else {
+    toggleButton.innerHTML = "❄️ 🚫";
+  }
+
+  toggleButton.addEventListener("click", () => {
+    toggleSnowflakes();
+
+    if (!JSON.parse(localStorage.getItem("snowflakes"))) {
+      clearInterval(snowingInterval);
+      toggleButton.innerHTML = "❄️";
+    } else {
+      snowingInterval = setInterval(createSnowflake, 1000);
+      toggleButton.innerHTML = "❄️ 🚫";
+    }
+  });
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   loadMapFromLocalStorage();
   initializeSelects();
+  initializeToggleSnowflakes();
   const currentDateElement = document.getElementById("currentDate");
   const now = new Date();
   const options = {
@@ -362,6 +390,11 @@ window.addEventListener("DOMContentLoaded", () => {
   if (storedTitle) {
     displaySheetTitle(storedTitle);
   }
+  if (!localStorage.getItem("snowflakes")) {
+    localStorage.setItem("snowflakes", true);
+  }
 
-  setInterval(createSnowflake, 1000);
+  if (JSON.parse(localStorage.getItem("snowflakes"))) {
+    snowingInterval = setInterval(createSnowflake, 1000);
+  }
 });
