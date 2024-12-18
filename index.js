@@ -1,6 +1,5 @@
 let SHEET_ID = null;
 const SHEETS = ["Пн", "Вт", "Ср", "Чт", "Пт"];
-let snowingInterval = null;
 
 function createSnowflake() {
   const snowflake = document.createElement("div");
@@ -33,11 +32,6 @@ function createSnowflake() {
 
   // Удаляем снежинку после завершения анимации
   animation.onfinish = () => snowflake.remove();
-}
-
-function toggleSnowflakes() {
-  const currentValue = JSON.parse(localStorage.getItem("snowflakes"));
-  localStorage.setItem("snowflakes", !currentValue);
 }
 
 function toggleLoader(show) {
@@ -349,24 +343,37 @@ function initializeSelects() {
 }
 
 function initializeToggleSnowflakes() {
+  const STORAGE_KEY = "snowflakes";
   const toggleButton = document.getElementById("toggleSnowflakes");
-  if (!JSON.parse(localStorage.getItem("snowflakes"))) {
-    toggleButton.innerHTML = "❄️";
-  } else {
-    toggleButton.innerHTML = "❄️ 🚫";
+  let snowingInterval;
+
+  // Инициализация состояния по умолчанию
+  const isSnowing = () => JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? true;
+
+  function startSnowfall() {
+    snowingInterval = setInterval(createSnowflake, 1000);
   }
 
-  toggleButton.addEventListener("click", () => {
-    toggleSnowflakes();
+  function stopSnowfall() {
+    clearInterval(snowingInterval);
+  }
 
-    if (!JSON.parse(localStorage.getItem("snowflakes"))) {
-      clearInterval(snowingInterval);
-      toggleButton.innerHTML = "❄️";
-    } else {
-      snowingInterval = setInterval(createSnowflake, 1000);
-      toggleButton.innerHTML = "❄️ 🚫";
-    }
-  });
+  function updateButtonIcon() {
+    toggleButton.innerHTML = isSnowing() ? "❄️ 🚫" : "❄️";
+  }
+
+  function toggleSnowflakes() {
+    const currentValue = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    localStorage.setItem(STORAGE_KEY, !currentValue);
+    const snowing = !currentValue;
+    snowing ? startSnowfall() : stopSnowfall();
+    updateButtonIcon();
+  }
+
+  if (isSnowing()) startSnowfall();
+  updateButtonIcon();
+
+  toggleButton.addEventListener("click", toggleSnowflakes);
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -389,12 +396,5 @@ window.addEventListener("DOMContentLoaded", () => {
   const storedTitle = localStorage.getItem("sheetTitle");
   if (storedTitle) {
     displaySheetTitle(storedTitle);
-  }
-  if (!localStorage.getItem("snowflakes")) {
-    localStorage.setItem("snowflakes", true);
-  }
-
-  if (JSON.parse(localStorage.getItem("snowflakes"))) {
-    snowingInterval = setInterval(createSnowflake, 1000);
   }
 });
